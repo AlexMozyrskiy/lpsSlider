@@ -31,7 +31,7 @@ function lpsSlider(arr)
     minWidthPercent = minWidth + '%';
     let marLeft = 0;                                                                                // изначальное значение, для первого элемента, показывает первый item
     let marLeftPercent = marLeft + '%';
-    let marLeftNext = marLeft + 1 / arr.toShow * arr.toSlide;                                   // маргин следующий за тукущим, чтобы определить не вылезет ли он за максимальгый, если да, то вычислим оставшиеся слайды и двинем на оставшиеся слайды
+    let marLeftNext = marLeft + 1 / arr.toShow * arr.toSlide;                                   // маргин следующий за текущим, чтобы определить не вылезет ли он за максимальгый, если да, то вычислим оставшиеся слайды и двинем на оставшиеся слайды
     const slideSpeed = arr.speed / 1000 + 's';                                                  // время за которое слайд прокрутится
     const notVisibleCount = sliderItemsLenght - arr.toShow;                 // количество невидимых слайдов, оставишхся за окном с overflow = hidden
     let marMax = notVisibleCount / arr.toShow;                                  // максимальный маргин при котором мы достигнем последнего слайда
@@ -106,7 +106,7 @@ function lpsSlider(arr)
     {
         if(marLeft === marMax) {                                        // если достигли последнего слайда, тоесть текущий маргин равен макисмальному перелистнем на первый слайд
             marLeft = 0;
-            marLeftNext = marLeft + 1 / arr.toShow * arr.toSlide;       // маргин следующий за тукущим, чтобы определить не вылезет ли он за максимальгый, если да, то вычислим оставшиеся слайды и двинем на оставшиеся слайды
+            marLeftNext = marLeft + 1 / arr.toShow * arr.toSlide;       // маргин следующий за текущим, чтобы определить не вылезет ли он за максимальгый, если да, то вычислим оставшиеся слайды и двинем на оставшиеся слайды
             marLeftPercent = marLeft * 100 + '%';
             sliderItems[0].style.marginLeft = '-' + marLeftPercent;
         } else if(marLeftNext > marMax) {                                  // если сл маргин будет больше текущего перелестнем на последний слайд
@@ -115,7 +115,7 @@ function lpsSlider(arr)
             sliderItems[0].style.marginLeft = '-' + marLeftPercent;
         } else {
             marLeft = marLeft + 1 / arr.toShow * arr.toSlide;
-            marLeftNext = marLeft + 1 / arr.toShow * arr.toSlide;           // маргин следующий за тукущим, чтобы определить не вылезет ли он за максимальгый, если да, то вычислим оставшиеся слайды и двинем на оставшиеся слайды
+            marLeftNext = marLeft + 1 / arr.toShow * arr.toSlide;           // маргин следующий за текущим, чтобы определить не вылезет ли он за максимальгый, если да, то вычислим оставшиеся слайды и двинем на оставшиеся слайды
             marLeftPercent = marLeft * 100 + '%';
             sliderItems[0].style.marginLeft = '-' + marLeftPercent;
         }
@@ -123,7 +123,21 @@ function lpsSlider(arr)
 
     function flipSlideLeft()                            // листаем слайды влево
     {
-
+        if(marLeft === 0) {                                        // если находимся в самом начале на первом слайде тогда в лево листнем на последний слайд
+            marLeft = marMax;
+            marLeftNext = marLeft + 1 / arr.toShow * arr.toSlide;       // маргин следующий за текущим, чтобы определить не вылезет ли он за максимальгый, если да, то вычислим оставшиеся слайды и двинем на оставшиеся слайды
+            marLeftPercent = marLeft * 100 + '%';
+            sliderItems[0].style.marginLeft = '-' + marLeftPercent;
+        } else if((marLeft - 1 / arr.toShow * arr.toSlide) < 0) {              // если при перелистывании влево сл перелистываение выйдет за пределы то есть будет меньше первого слайда
+            marLeft = 0;
+            marLeftPercent = marLeft * 100 + '%';
+            sliderItems[0].style.marginLeft = '-' + marLeftPercent;
+        } else {
+            marLeft = marLeft - 1 / arr.toShow * arr.toSlide;
+            marLeftNext = marLeft + 1 / arr.toShow * arr.toSlide;           // маргин следующий за текущим, чтобы определить не вылезет ли он за максимальгый, если да, то вычислим оставшиеся слайды и двинем на оставшиеся слайды
+            marLeftPercent = marLeft * 100 + '%';
+            sliderItems[0].style.marginLeft = '-' + marLeftPercent;
+        }
     }
     // -------------- / Вспомогательные функции, вызываем в коде слайдера -----------------------
 }
@@ -141,7 +155,7 @@ lpsSlider({
     overflowHiddenWindowClass: 'slider',
     sliderItemClass: 'slider__item',
     toShow: 3,
-    timeOut: 2000,
+    // timeOut: 2000,
     speed: 1000,
     toSlide: 2,
     arrows: {
