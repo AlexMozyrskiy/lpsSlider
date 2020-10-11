@@ -54,6 +54,7 @@ function lpsSlider(arr)
 
     // -------------- проверим, если разработчик указал показывать стрелки, но не указал классы этих стрелок выдадим сообщение, в противном случаее присвоим переменным элементы с этими классами ---------------------
     if(typeof arr.arrows.show != "undefined") {                     // проверим, если разработчик указал 
+
         if(typeof arr.arrows.arrowPrevClass == "undefined") {
             alert ('dear developer, you indicated arr.arrows.show, which means you wanted to use scroll paths, but you did not specify the arrow class: arr.arrows.arrowPrevClass');
         } else {
@@ -77,7 +78,16 @@ function lpsSlider(arr)
         }
     // -------------- / если указан автоматический скролл, указана переменная arr.timeOut ------------------------------------------
 
+    // ----------------------------------- Если показываем стрелки ---------------------------------
     if(typeof arr.arrows.show != "undefined") {                               // если показываем стрелки
+        if(arr.timeOut != 0) {                                              // и если разработчик включил автоматическую прокрутку
+            arrowNext.addEventListener('mouseover', pauseSlides);                           // при наведении мыши на стрелку Next остановим слайдер
+            arrowNext.addEventListener('mouseout', resumeSlides);                           // при нахождении мыши не на стрелке Next запустим слайдер дальше
+
+            arrowPrev.addEventListener('mouseover', pauseSlides);
+            arrowPrev.addEventListener('mouseout', resumeSlides);
+        }
+
         arrowNext.addEventListener('click', () => {                            // если нажали на стрелку next
             flipSlideRight();
         });
@@ -87,6 +97,7 @@ function lpsSlider(arr)
         // overflowHiddenElement.insertAdjacentHTML('afterend', `<span class="${arr.arrows.arrowsClass} ${arr.arrows.arrowNextClass}"></span>`);
         // overflowHiddenElement.insertAdjacentHTML('afterend', `<span class="${arr.arrows.arrowsClass} ${arr.arrows.arrowPrevClass}"></span>`);
     }
+    // ----------------------------------- / Если показываем стрелки -------------------------------
 
 
 
@@ -155,12 +166,12 @@ lpsSlider({
     overflowHiddenWindowClass: 'slider',
     sliderItemClass: 'slider__item',
     toShow: 3,
-    // timeOut: 2000,
+    timeOut: 2000,
     speed: 1000,
     toSlide: 2,
     arrows: {
         show: true,
-        arrowsClass: 'arrows',
+        // arrowsClass: 'arrows',
         arrowPrevClass: 'arrow_prev',
         arrowNextClass: 'arrow_next',
     },
