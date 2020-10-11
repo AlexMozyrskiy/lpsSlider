@@ -12,6 +12,7 @@ function lpsSlider(arr)
 }
 */
 {
+    
     const overflowHiddenElement = document.querySelector('.' + arr.overflowHiddenWindowClass),      // получаем окно в котором будет карусель
     sliderItems = document.querySelectorAll('.' + arr.sliderItemClass);                             // получаем все items для карусели
 
@@ -44,6 +45,7 @@ function lpsSlider(arr)
     const notVisibleCount = sliderItems.length - arr.toShow;                 // количество невидимых слайдов, оставишхся за окном с overflow = hidden
     const maxDriveCount = notVisibleCount / arr.toSlide;                       // сколько раз двигаем чтобы добраться до конца (максимальное количество движений)
     let currentDriveCount = 0;                                                  // сколько раз уже прокрутили, текущее количество прокруток
+    let slidesLeft = sliderItems.length;                                    // сколько слайдов осталось листать до последнего
     // ---------- / сколько раз надо двигать чтобы добраться до конца полоски слайдов -----------------
 
     overflowHiddenElement.style.display = 'flex';
@@ -55,11 +57,11 @@ function lpsSlider(arr)
         sliderItems[0].style.marginLeft = '-' + marLeftPercent;                      // изначальное значение при загрузке сранице, для первого элемента, показывает первый item
     }
 
-    if(arr.timeOut != 0) {                                                          // если пользхователь захотел слайдить через определенный интервал времени
+    if(arr.timeOut != 0) {                                                          // если пользователь захотел слайдить через определенный интервал времени
         setInterval(() => {
             if(currentDriveCount < maxDriveCount) {                                          // если ещё не дошли до последнего слайда
                 if((currentDriveCount + 1) >= maxDriveCount) {                     // если следующее движение слайда последнее, то выполним этот код, сдесь вычислим сколько слайдов осталось и двинем на это количество
-                    const slidesLeft = sliderItems.length - arr.toShow - (currentDriveCount * arr.toSlide);         // сколько слайдов осталось
+                    slidesLeft = sliderItems.length - arr.toShow - (currentDriveCount * arr.toSlide);         // сколько слайдов осталось
                     marLeft = (marLeft + slidesLeft / arr.toShow);                     // новый маргин с учетом сколько слайдов осталось
                     marLeftPercent = marLeft * 100 + '%';
                     sliderItems[0].style.marginLeft = '-' + marLeftPercent;
@@ -79,8 +81,20 @@ function lpsSlider(arr)
         const arrowPrev = document.querySelector('.' + arr.arrows.arrowPrevClass),
               arrowNext = document.querySelector('.' + arr.arrows.arrowNextClass);
 
-        arrowNext.addEventListener('click', () => {
-            console.log('ad');
+        arrowNext.addEventListener('click', () => {                            // если нажали на стрелку next
+            if((currentDriveCount + 1) >= maxDriveCount) {                     // если следующее движение слайда последнее, то выполним этот код, сдесь вычислим сколько слайдов осталось и двинем на это количество
+                slidesLeft = sliderItems.length - arr.toShow - (currentDriveCount * arr.toSlide);         // сколько слайдов осталось
+                marLeft = (marLeft + slidesLeft / arr.toShow);                     // новый маргин с учетом сколько слайдов осталось
+                marLeftPercent = marLeft * 100 + '%';
+                sliderItems[0].style.marginLeft = '-' + marLeftPercent;
+                currentDriveCount = -1;                                          // когда достигаем последнего слайда обнуляем счетчик прокруток, чтобы он продолжал работать дальше, так же
+                marLeft = - (1 / arr.toShow * arr.toSlide);                     // делаем маргин таким образом, чтобы при его следующем вычислении он получил значение 0 и слайдер прокуртил на 1 слайд
+            } else {
+                marLeft = (marLeft + 1 / arr.toShow * arr.toSlide);                     // новый маргин с учетом сколько разработчик указал он хочет прокуручивать и видеть слайдов
+                marLeftPercent = marLeft * 100 + '%';
+                sliderItems[0].style.marginLeft = '-' + marLeftPercent;     // вставляем новый маргин для прокрутки
+                currentDriveCount++;
+            }
         });
         // overflowHiddenElement.insertAdjacentHTML('afterend', `<span class="${arr.arrows.arrowsClass} ${arr.arrows.arrowNextClass}"></span>`);
         // overflowHiddenElement.insertAdjacentHTML('afterend', `<span class="${arr.arrows.arrowsClass} ${arr.arrows.arrowPrevClass}"></span>`);
