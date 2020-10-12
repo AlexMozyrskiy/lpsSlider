@@ -8,7 +8,11 @@ function lpsSlider(arr)
     toShow:                                 // сколько items показывать в окне
     timeOut:                              // тайм аут между перелистываниями слайдов, в миллисекундах
     speed:                                  // время за которое слайд прокрутится, в миллисеекундах
-    arrows: false                          // показывать ли стрелки, по умолчанию false
+    arrows: {                               // стрелки перелистывания
+        show: true,                         // если есть стрелки next и prev добавить ли им функционал
+        arrowPrevClass: 'arrow_prev',       // html класс стрелки влево
+        arrowNextClass: 'arrow_next',       // html класс стрелки вправо
+    },
 }
 */
 {
@@ -169,10 +173,9 @@ lpsSlider({
     timeOut: 2000,
     speed: 1000,
     toSlide: 2,
-    arrows: {
-        show: true,
-        // arrowsClass: 'arrows',
-        arrowPrevClass: 'arrow_prev',
-        arrowNextClass: 'arrow_next',
-    },
+    // arrows: {
+    //     show: true,
+    //     arrowPrevClass: 'arrow_prev',
+    //     arrowNextClass: 'arrow_next',
+    // },
 });
