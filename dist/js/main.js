@@ -203,30 +203,3 @@ function lpsSlider(arr)
     }
     // -------------- / Вспомогательные функции, вызываем в коде слайдера -----------------------
 }
-
-
-
-
-
-
-
-
-
-
-lpsSlider({
-    overflowHiddenWindowClass: 'slider',
-    sliderItemClass: 'slider__item',
-    toShow: 3,
-    timeOut: 2000,
-    speed: 1000,
-    toSlide: 2,
-    arrows: {
-        show: true,
-        arrowPrevClass: 'arrow_prev',
-        arrowNextClass: 'arrow_next',
-    },
-    dots: {
-        show: true,
-        // html: ,
-    }
-});
