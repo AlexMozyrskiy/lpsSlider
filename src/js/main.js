@@ -118,8 +118,27 @@ function lpsSlider(arr)
             overflowHiddenElement.insertAdjacentHTML('afterend', `<div class="${arr.dots.wrapperClass}"></div>`);   // вставим обертку для точек после overflowHiddenElement
             const dotsParrentDiv = document.querySelector('.' + arr.dots.wrapperClass);
 
-            for(let i = 0; i < sliderItemsLenght; i++) {                                                        // вствим дивы 
-                dotsParrentDiv.insertAdjacentHTML('beforeend', `<span class="${arr.dots.class}"></span>`);
+            for(let i = 0; i < sliderItemsLenght; i++) {                                                        // вствим спаны точек с указанными классами 
+                if(i != 0) {                                                                                    // если это не первая точка проста встави класс точки
+                    dotsParrentDiv.insertAdjacentHTML('beforeend', `<span class="${arr.dots.class}"></span>`);
+                } else {                                                                                        // если это первая точка вставим еще и класс активность для точки
+                    dotsParrentDiv.insertAdjacentHTML('beforeend', `<span class="${arr.dots.class} ${arr.dots.activeClass}"></span>`);
+                }
+            }
+
+            var lpsSliderDots = document.getElementsByClassName(arr.dots.class);                        // возьмём все точки
+
+            for(let i = 0; i < sliderItemsLenght; i++) {
+                lpsSliderDots[i].addEventListener('mouseover', pauseSlides);                           // при наведении мыши на любую dot остановим слайдер
+                lpsSliderDots[i].addEventListener('mouseout', resumeSlides);                           // при нахождении мыши не на любой dot запустим слайдер дальше
+
+                lpsSliderDots[i].addEventListener('click', function() {                                 // при клике на точку прыгнем на соответствующий слайд
+                    if(i <= (sliderItemsLenght - arr.toShow)) {                     // если кликают на слайд меньше максимально возможного показа слайдов окне overflowHiddenElement (условие, чтобы мы не вышли за последний слйд и не показали пустоту)
+                        jumpToSlide(i);
+                    } else {
+                        jumpToSlide((sliderItemsLenght - arr.toShow));              // если кликают по слайду больше максимально допустимого к показу и мы при переходе на него выйдем за самый последний слайд, просто перейдем к последнему слайду, чтобы он окзался на самой правой позицци в окне overflowHiddenElement
+                    }
+                });
             }
         } else {                                                                            // если разработчик не указал html для точек вставим html по умочанию
             overflowHiddenElement.insertAdjacentHTML('afterend', '<div class="lpsSliderDotsWrapper"></div>');   // вставим обертку для точек после overflowHiddenElement
@@ -234,7 +253,41 @@ function lpsSlider(arr)
             }
 
             lpsSliderDots[currentSlide()].children[0].style.transform = 'scale(2) translateY(-25%)';
+        } else {
+            for(let i = 0; i < sliderItemsLenght; i++) {
+                lpsSliderDots[i].classList.remove('active__class');
+            }
+            lpsSliderDots[currentSlide()].classList.add('active__class');
         }
     }
     // -------------- / Вспомогательные функции, вызываем в коде слайдера -----------------------
 }
+
+
+
+
+
+
+
+
+
+
+lpsSlider({
+    overflowHiddenWindowClass: 'slider',
+    sliderItemClass: 'slider__item',
+    toShow: 3,
+    timeOut: 2000,
+    speed: 500,
+    toSlide: 2,
+    arrows: {
+        show: true,
+        prevClass: 'arrow_prev',
+        nextClass: 'arrow_next',
+    },
+    dots: {
+        show: true,
+        wrapperClass: 'slider__dots-wrapper',
+        class: 'slider__dot',
+        activeClass: 'active__class',
+    },
+});
