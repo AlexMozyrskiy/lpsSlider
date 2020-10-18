@@ -10,8 +10,13 @@ function lpsSlider(arr)
     speed:                                  // время за которое слайд прокрутится, в миллисеекундах
     arrows: {                               // стрелки перелистывания
         show: true,                         // если есть стрелки next и prev добавить ли им функционал
-        arrowPrevClass: 'arrow_prev',       // html класс стрелки влево
-        arrowNextClass: 'arrow_next',       // html класс стрелки вправо
+        prevClass: 'arrow_prev',       // html класс стрелки влево
+        nextClass: 'arrow_next',       // html класс стрелки вправо
+    },
+    dots: {                                         // dots переключения слайдов. Если указать в show: true, а в wrapperClass не указывать вставятся точеи по умолчанию
+        show: true,                                 // показываем ли
+        wrapperClass: 'slider__dots-wrapper',       // класс обертки для dots слайдов
+        class: 'slider__dot',                       // класс отдельно взятой dot
     },
 }
 */
@@ -63,16 +68,16 @@ function lpsSlider(arr)
     // -------------- проверим, если разработчик указал показывать стрелки, но не указал классы этих стрелок выдадим сообщение, в противном случаее присвоим переменным элементы с этими классами ---------------------
     if(typeof arr.arrows.show != "undefined") {                     // проверим, если разработчик указал 
 
-        if(typeof arr.arrows.arrowPrevClass == "undefined") {
-            alert ('dear developer, you indicated arr.arrows.show, which means you wanted to use scroll paths, but you did not specify the arrow class: arr.arrows.arrowPrevClass');
+        if(typeof arr.arrows.prevClass == "undefined") {
+            alert ('dear developer, you indicated arr.arrows.show, which means you wanted to use scroll paths, but you did not specify the arrow class: arr.arrows.prevClass');
         } else {
-            var arrowPrev = document.querySelector('.' + arr.arrows.arrowPrevClass);
+            var arrowPrev = document.querySelector('.' + arr.arrows.prevClass);
         }
 
-        if(typeof arr.arrows.arrowNextClass == "undefined") {
-            alert ('dear developer, you indicated arr.arrows.show, which means you wanted to use scroll paths, but you did not specify the arrow class: arr.arrows.arrowNextClass');
+        if(typeof arr.arrows.nextClass == "undefined") {
+            alert ('dear developer, you indicated arr.arrows.show, which means you wanted to use scroll paths, but you did not specify the arrow class: arr.arrows.nextClass');
         } else {
-            var arrowNext = document.querySelector('.' + arr.arrows.arrowNextClass);
+            var arrowNext = document.querySelector('.' + arr.arrows.nextClass);
         }
     }
     // -------------- / проверим, если разработчик указал показывать стрелки, но не указал классы этих стрелок выдадим сообщение-------------------
@@ -102,16 +107,20 @@ function lpsSlider(arr)
         arrowPrev.addEventListener('click', () => {                            // если нажали на стрелку prev
             flipSlideLeft();
         });
-        // overflowHiddenElement.insertAdjacentHTML('afterend', `<span class="${arr.arrows.arrowsClass} ${arr.arrows.arrowNextClass}"></span>`);
-        // overflowHiddenElement.insertAdjacentHTML('afterend', `<span class="${arr.arrows.arrowsClass} ${arr.arrows.arrowPrevClass}"></span>`);
+        // overflowHiddenElement.insertAdjacentHTML('afterend', `<span class="${arr.arrows.arrowsClass} ${arr.arrows.nextClass}"></span>`);
+        // overflowHiddenElement.insertAdjacentHTML('afterend', `<span class="${arr.arrows.arrowsClass} ${arr.arrows.prevClass}"></span>`);
     }
     // ----------------------------------- / Если показываем стрелки -------------------------------
 
     // ----------------------------------- Если показываем точки -----------------------------------
     if(arr.dots.show) {                               // если показываем точки
-        if(typeof arr.dots.html != "undefined") {                                           // если разработчик указал html точек, сделаем точки с указанным html
-            // console.log(arr.dots.html);
-            // overflowHiddenElement.insertAdjacentHTML('afterend', '<div>Test</div>');
+        if(typeof arr.dots.wrapperClass != "undefined") {                                           // если разработчик указал классы точек, сделаем точки с указанным классом
+            overflowHiddenElement.insertAdjacentHTML('afterend', `<div class="${arr.dots.wrapperClass}"></div>`);   // вставим обертку для точек после overflowHiddenElement
+            const dotsParrentDiv = document.querySelector('.' + arr.dots.wrapperClass);
+
+            for(let i = 0; i < sliderItemsLenght; i++) {                                                        // вствим дивы 
+                dotsParrentDiv.insertAdjacentHTML('beforeend', `<span class="${arr.dots.class}"></span>`);
+            }
         } else {                                                                            // если разработчик не указал html для точек вставим html по умочанию
             overflowHiddenElement.insertAdjacentHTML('afterend', '<div class="lpsSliderDotsWrapper"></div>');   // вставим обертку для точек после overflowHiddenElement
             const dotsParrentDiv = document.querySelector('.lpsSliderDotsWrapper');
@@ -122,7 +131,7 @@ function lpsSlider(arr)
                                             `;                                                              // вставим нужные стили обертке для точек
 
             for(let i = 0; i < sliderItemsLenght; i++) {                                                    // вставим точки равное количеству слайдов с нужными стилями по умолчанию
-                dotsParrentDiv.insertAdjacentHTML('beforeend', `<div class="lpsSliderDot" style="height: 50px; width: 50px; background-color: gray; border-radius: 50%; cursor: pointer; text-align: center;"><div style="padding-top: 50%; transform: translateY(-25%);">${i + 1}</div></div>`);
+                dotsParrentDiv.insertAdjacentHTML('beforeend', `<span class="lpsSliderDot" style="height: 50px; width: 50px; background-color: gray; border-radius: 50%; cursor: pointer; text-align: center;"><div style="padding-top: 50%; transform: translateY(-25%);">${i + 1}</div></span>`);
             }
 
             var lpsSliderDots = document.getElementsByClassName('lpsSliderDot');                        // возьмём все точки
@@ -219,7 +228,7 @@ function lpsSlider(arr)
 
     function activeDot()                                                // добавление стилей активности текущей dot
     {
-        if(arr.dots.show && typeof arr.dots.html == "undefined") {
+        if(arr.dots.show && typeof arr.dots.wrapperClass == "undefined") {
             for(let i = 0; i < sliderItemsLenght; i++) {
                 lpsSliderDots[i].children[0].style.transform = 'scale(1) translateY(-25%)';
             }
@@ -244,15 +253,16 @@ lpsSlider({
     sliderItemClass: 'slider__item',
     toShow: 3,
     timeOut: 2000,
-    speed: 1000,
+    speed: 500,
     toSlide: 2,
     arrows: {
         show: true,
-        arrowPrevClass: 'arrow_prev',
-        arrowNextClass: 'arrow_next',
+        prevClass: 'arrow_prev',
+        nextClass: 'arrow_next',
     },
     dots: {
         show: true,
-        // html: ,
-    }
+        wrapperClass: 'slider__dots-wrapper',
+        class: 'slider__dot',
+    },
 });
