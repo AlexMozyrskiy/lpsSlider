@@ -125,7 +125,9 @@ function lpsSlider(arr)
                 dotsParrentDiv.insertAdjacentHTML('beforeend', `<div class="lpsSliderDot" style="height: 50px; width: 50px; background-color: gray; border-radius: 50%; cursor: pointer; text-align: center;"><div style="padding-top: 50%; transform: translateY(-25%);">${i + 1}</div></div>`);
             }
 
-            let lpsSliderDots = document.getElementsByClassName('lpsSliderDot');                        // возьмём все точки
+            var lpsSliderDots = document.getElementsByClassName('lpsSliderDot');                        // возьмём все точки
+
+            lpsSliderDots[0].children[0].style.transform = 'scale(2) translateY(-25%)';                 // сделаем активным с самого начала первую dot
 
             for(let i = 0; i < sliderItemsLenght; i++) {
                 lpsSliderDots[i].addEventListener('mouseover', pauseSlides);                           // при наведении мыши на любую dot остановим слайдер
@@ -164,15 +166,18 @@ function lpsSlider(arr)
             marLeftNext = marLeft + marMin;       // маргин следующий за текущим, чтобы определить не вылезет ли он за максимальгый, если да, то вычислим оставшиеся слайды и двинем на оставшиеся слайды
             marLeftPercent = marLeft * 100 + '%';
             sliderItems[0].style.marginLeft = '-' + marLeftPercent;
+            activeDot();
         } else if(marLeftNext > marMax) {                                  // если сл маргин будет больше текущего перелестнем на последний слайд
             marLeft = marMax;
             marLeftPercent = marLeft * 100 + '%';
             sliderItems[0].style.marginLeft = '-' + marLeftPercent;
+            activeDot();
         } else {
             marLeft = marLeft + marMin;
             marLeftNext = marLeft + marMin;           // маргин следующий за текущим, чтобы определить не вылезет ли он за максимальгый, если да, то вычислим оставшиеся слайды и двинем на оставшиеся слайды
             marLeftPercent = marLeft * 100 + '%';
             sliderItems[0].style.marginLeft = '-' + marLeftPercent;
+            activeDot();
         }
     }
 
@@ -183,23 +188,44 @@ function lpsSlider(arr)
             marLeftNext = marLeft + marMin;       // маргин следующий за текущим, чтобы определить не вылезет ли он за максимальгый, если да, то вычислим оставшиеся слайды и двинем на оставшиеся слайды
             marLeftPercent = marLeft * 100 + '%';
             sliderItems[0].style.marginLeft = '-' + marLeftPercent;
+            activeDot();
         } else if((marLeft - marMin) < 0) {              // если при перелистывании влево сл перелистываение выйдет за пределы то есть будет меньше первого слайда
             marLeft = 0;
             marLeftPercent = marLeft * 100 + '%';
             sliderItems[0].style.marginLeft = '-' + marLeftPercent;
+            activeDot();
         } else {
             marLeft = marLeft - marMin;
             marLeftNext = marLeft + marMin;           // маргин следующий за текущим, чтобы определить не вылезет ли он за максимальгый, если да, то вычислим оставшиеся слайды и двинем на оставшиеся слайды
             marLeftPercent = marLeft * 100 + '%';
             sliderItems[0].style.marginLeft = '-' + marLeftPercent;
+            activeDot();
         }
     }
 
-    function jumpToSlide(slidNumber) {               // переметиться к слайду по порядковому номеру (slidNumber), slidNumber начинается с 0
+    function jumpToSlide(slidNumber)                              // переметиться к слайду по порядковому номеру (slidNumber), slidNumber начинается с 0
+    {
         marLeft = slidNumber * (minWidth / 100);     // minWidth / 100 чтобы привести числа к нужной разрядности
         marLeftNext = marLeft + marMin;       // маргин следующий за текущим, чтобы определить не вылезет ли он за максимальгый, если да, то вычислим оставшиеся слайды и двинем на оставшиеся слайды
         marLeftPercent = marLeft * 100 + '%';
         sliderItems[0].style.marginLeft = '-' + marLeftPercent;
+        activeDot();
+    }
+
+    function currentSlide()                                                 // текущий слайд
+    {
+        return Math.round((marLeft * 100) / minWidth);
+    }
+
+    function activeDot()                                                // добавление стилей активности текущей dot
+    {
+        if(arr.dots.show && typeof arr.dots.html == "undefined") {
+            for(let i = 0; i < sliderItemsLenght; i++) {
+                lpsSliderDots[i].children[0].style.transform = 'scale(1) translateY(-25%)';
+            }
+
+            lpsSliderDots[currentSlide()].children[0].style.transform = 'scale(2) translateY(-25%)';
+        }
     }
     // -------------- / Вспомогательные функции, вызываем в коде слайдера -----------------------
 }
