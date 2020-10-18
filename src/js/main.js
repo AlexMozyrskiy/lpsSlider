@@ -17,6 +17,7 @@ function lpsSlider(arr)
         show: true,                                 // показываем ли
         wrapperClass: 'slider__dots-wrapper',       // класс обертки для dots слайдов
         class: 'slider__dot',                       // класс отдельно взятой dot
+        activeClass: 'active__class',               // класс активности для точки, по клику или автоматическому переключению добавляется к текуще точке 
     },
 }
 */
@@ -255,9 +256,9 @@ function lpsSlider(arr)
             lpsSliderDots[currentSlide()].children[0].style.transform = 'scale(2) translateY(-25%)';
         } else {
             for(let i = 0; i < sliderItemsLenght; i++) {
-                lpsSliderDots[i].classList.remove('active__class');
+                lpsSliderDots[i].classList.remove(arr.dots.activeClass);
             }
-            lpsSliderDots[currentSlide()].classList.add('active__class');
+            lpsSliderDots[currentSlide()].classList.add(arr.dots.activeClass);
         }
     }
     // -------------- / Вспомогательные функции, вызываем в коде слайдера -----------------------
